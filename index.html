@@ -1,0 +1,211 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Shadowrun Dice Roller</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <style type="text/css" media="screen">
+         body {
+             padding-top: 50px;
+         }
+         .starter-template {
+             padding: 40px 15px;
+             text-align: center;
+         }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+	<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+	        <div class="navbar-header">
+	            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	                <span class="sr-only">Toggle navigation</span>
+	                <span class="icon-bar"></span>
+	                <span class="icon-bar"></span>
+	                <span class="icon-bar"></span>
+	            </button>
+	            <a class="navbar-brand" href="#">Shadowrun Dice Roller</a>
+	        </div>
+	        <div id="navbar" class="collapse navbar-collapse">
+	            <ul class="nav navbar-nav">
+	                <!-- <li class="active"><a href="#">Home</a></li>
+		        <li><a href="#about">About</a></li>
+	                <li><a href="#contact">Contact</a></li> -->
+	            </ul>
+	        </div>
+            </div>
+        </nav>
+
+        <!-- Add your site or application content here -->
+        <div class="container">
+            <h1>Shadowrun Dice Roller</h1>
+            <hr/>
+            <div class="row">
+	        <div id="input" class="col-sm-8">
+	            <form id="inputForm" action="#" class="form-inline" accept-charset="utf-8">
+
+	                <div class="form-group">
+	                    <label for="nbrOfDices">Number of dices: </label>
+	                    <input id="nbrOfDices" type="number" class="form-control" name="nbrOfDices" value="10" placeholder="Enter number of d6's">
+	                </div>
+	                <div class="form-group col-sm-offset-1">
+	                    <label>
+		                <input id="explodingSixes" checked type="checkbox" name="exploding6s" value="true"> Exploding 6s?
+	                    </label>
+	                </div>
+	                <button id="btnRoll" type="button" class="col-md-offset-1 btn btn-primary">Roll the dice!</button>
+	            </form>
+	        </div>
+            </div>
+            <hr/>
+            <div id="results" class="row">
+            </div>
+        </div>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css"> -->
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <script type="text/javascript" charset="utf-8">
+         function Dice(sides) {
+             this.sides = sides;
+         }
+
+         Dice.prototype.value = function () {
+             return this.currentSide;
+         };
+
+         Dice.prototype.setValue = function (side) {
+             this.currentSide = side;
+         };
+
+         Dice.prototype.roll = function () {
+             this.currentSide = Math.floor(Math.random() * this.sides) + 1;
+         };
+
+         function Hand(sides, count)  {
+             this.typeOfDice = sides;
+             this.count = count;
+             this.dice = [];
+             this.hasBeenRolled = false;
+             this.successes = 0;
+             this.failures = 0;
+             this.exploding6s = false;
+         }
+
+         Hand.prototype.roll = function (rolledDice, isExploding) {
+	     this.hasBeenRolled = true;
+
+	     if (typeof rolledDice === 'undefined') {
+		 rolledDice = [];
+
+		 var tmp = [];
+		 var count = this.count;
+		 for (var i = 0; i < count; i++) {
+		     var theDie;
+		     do {
+			 theDie = new Dice(this.typeOfDice);
+			 theDie.roll();
+			 tmp.push(theDie);
+		     } while (theDie.value() === 6 && isExploding);
+		 };
+		 rolledDice = tmp;
+	     }
+
+	     this.successes = 0;
+	     this.failures = 0;
+	     for (var i = 0; i < rolledDice.length; i++) {
+		 if (rolledDice[i].currentSide === 5 || rolledDice[i].currentSide === 6) {
+                     console.log('hit');
+		     this.successes++;
+		 } else {
+		     this.failures++;
+		 }
+	     };
+
+	     if (this.failures >= this.count / 2.0 && this.successes == 0) {
+		 this.state = 'Critical Glitch';
+	     } else if (this.failures >= this.count / 2.0 && this.successes > 0) {
+		 this.state = 'Glitch';
+	     } else if (this.failures > 0 && this.failures < this.count / 2.0 && this.successes == 0) {
+		 this.state = 'Fail';
+	     } else if (this.failures < this.successes) {
+		 this.state = 'Success';
+	     }
+
+             console.log('successes: ' + this.successes);
+
+	     this.dice = rolledDice;             
+         }
+
+         Hand.prototype.getDie = function (index) {
+             console.log('calling dice');
+             return this.dice[index].value();
+         }
+
+         Hand.prototype.getSuccesses = function () {
+             return this.successes;
+         }
+
+         Hand.prototype.getState = function () {
+             return this.state;
+         }
+
+         function getDieSuccessClass(die) {
+             if (die == 5) {
+                 return ' class="info"';
+             }
+             if (die == 6) {
+                 return ' class="success"';
+             }
+         }
+
+         function getOverviewClass(state) {             
+             if (state === 'Critical Glitch') {
+                 return 'class="danger"';
+             }
+             if (state === 'Glitch') {
+                 return 'class="warning"';
+             }
+             if (state === 'Success') {
+                 return 'class="success"';
+             }
+         }
+
+         $('#btnRoll').click(function() {
+             $('#results').empty();
+             
+             var count = parseInt($('#nbrOfDices').val()),
+                 hand = new Hand(6, count),
+                 table = '<table id="resultTable" class="table">';
+             
+             hand.roll(undefined, $('#explodingSixes')[0].checked);
+             table += "<thead><tr><td><span>Successes: " + hand.getSuccesses() + "</span></td><td "+getOverviewClass(hand.getState()) +"><span>Overall: " +
+                      hand.getState() + "</span></td></tr>";
+             table += "<tr><th>#</th><th>Result</th></tr></thead>";             
+             for(var i = 0; i < hand.dice.length; i++) {
+                 table += "<tr" + getDieSuccessClass(hand.getDie(i)) + ">";                 
+                 table += "<td>" + i + "</td><td>" + hand.getDie(i) + "</td>";
+                 table += "</tr>";
+             }
+             
+             table += "</table>";
+             
+             $('#results').append(table);
+         });
+        </script>
+    </body>
+</html>
