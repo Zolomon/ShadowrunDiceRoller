@@ -139,7 +139,8 @@
                      this.oneCount++;
                  }
 	     };
-             
+
+             this.state = '';
 	     if (this.oneCount >= this.count / 2.0 && this.successes == 0) {
 		 this.state = 'Critical Glitch';
 	     } else if (this.oneCount >= this.count / 2.0 && this.successes > 0) {
@@ -151,8 +152,9 @@
 	     }
 
              console.log('successes: ' + this.successes);
-
-	     this.dice = rolledDice;             
+             
+	     this.dice = rolledDice;
+             this.dice.sort(function (a,b) {return a.value() - b.value()});
          }
 
          Hand.prototype.getDie = function (index) {
