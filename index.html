@@ -127,6 +127,7 @@
 
 	     this.successes = 0;
 	     this.failures = 0;
+             this.oneCount = 0;
 	     for (var i = 0; i < rolledDice.length; i++) {
 		 if (rolledDice[i].currentSide === 5 || rolledDice[i].currentSide === 6) {
                      console.log('hit');
@@ -134,15 +135,18 @@
 		 } else {
 		     this.failures++;
 		 }
+                 if (rolledDice[i].currentSide === 1) {
+                     this.oneCount++;
+                 }
 	     };
-
-	     if (this.failures >= this.count / 2.0 && this.successes == 0) {
+             
+	     if (this.oneCount >= this.count / 2.0 && this.successes == 0) {
 		 this.state = 'Critical Glitch';
-	     } else if (this.failures >= this.count / 2.0 && this.successes > 0) {
+	     } else if (this.oneCount >= this.count / 2.0 && this.successes > 0) {
 		 this.state = 'Glitch';
-	     } else if (this.failures > 0 && this.failures < this.count / 2.0 && this.successes == 0) {
+	     } else if (this.failures > 0 && this.successes == 0) {
 		 this.state = 'Fail';
-	     } else if (this.failures < this.successes) {
+	     } else {
 		 this.state = 'Success';
 	     }
 
@@ -166,10 +170,13 @@
 
          function getDieSuccessClass(die) {
              if (die == 5) {
-                 return ' class="info"';
+                 return 'class="info"';
              }
              if (die == 6) {
-                 return ' class="success"';
+                 return 'class="success"';
+             }
+             if (die == 1) {
+                 return 'class="danger"';
              }
          }
 
@@ -183,6 +190,7 @@
              if (state === 'Success') {
                  return 'class="success"';
              }
+             return '';
          }
 
          $('#btnRoll').click(function() {
@@ -197,7 +205,7 @@
                       hand.getState() + "</span></td></tr>";
              table += "<tr><th>#</th><th>Result</th></tr></thead>";             
              for(var i = 0; i < hand.dice.length; i++) {
-                 table += "<tr" + getDieSuccessClass(hand.getDie(i)) + ">";                 
+                 table += "<tr " + getDieSuccessClass(hand.getDie(i)) + ">";                 
                  table += "<td>" + i + "</td><td>" + hand.getDie(i) + "</td>";
                  table += "</tr>";
              }
