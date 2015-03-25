@@ -9,7 +9,9 @@
         <title>Shadowrun Dice Roller</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <!--
+             Place favicon.ico and apple-touch-icon.png in the root directory
+          -->
         <style type="text/css" media="screen">
          body {
              padding-top: 50px;
@@ -22,12 +24,16 @@
     </head>
     <body>
         <!--[if lt IE 7]>
-	<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<p class="browsehappy">You are using an <strong>outdated</strong>
+          browser. Please <a href="http://browsehappy.com/">upgrade your browser
+          </a> to improve your experience.</p>
 	<![endif]-->
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
 	        <div class="navbar-header">
-	            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	          <button type="button" class="navbar-toggle collapsed"
+                          data-toggle="collapse" data-target="#navbar"
+                          aria-expanded="false" aria-controls="navbar">
 	                <span class="sr-only">Toggle navigation</span>
 	                <span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
@@ -51,18 +57,25 @@
             <hr/>
             <div class="row">
 	        <div id="input" class="col-sm-8">
-	            <form id="inputForm" action="#" class="form-inline" accept-charset="utf-8">
-
+	          <form id="inputForm" action="#" class="form-inline"
+                        accept-charset="utf-8">
 	                <div class="form-group">
 	                    <label for="nbrOfDices">Number of dices: </label>
-	                    <input id="nbrOfDices" type="number" class="form-control" name="nbrOfDices" value="10" placeholder="Enter number of d6's">
+	                    <input id="nbrOfDices" type="number"
+                                   class="form-control" name="nbrOfDices"
+                                   value="10"
+                                   placeholder="Enter number of d6's">
 	                </div>
 	                <div class="form-group col-sm-offset-1">
 	                    <label>
-		                <input id="explodingSixes" checked type="checkbox" name="exploding6s" value="true"> Exploding 6s?
+		              <input id="explodingSixes" checked
+                                     type="checkbox" name="exploding6s"
+                                     value="true"> Exploding 6s?
 	                    </label>
 	                </div>
-	                <button id="btnRoll" type="button" class="col-md-offset-1 btn btn-primary">Roll the dice!</button>
+	                <button id="btnRoll" type="button"
+                                class="col-md-offset-1 btn btn-primary">
+                          Roll the dice!</button>
 	            </form>
 	        </div>
             </div>
@@ -152,7 +165,7 @@
 	     }
 
              console.log('successes: ' + this.successes);
-             
+
 	     this.dice = rolledDice;
              this.dice.sort(function (a,b) {return a.value() - b.value()});
          }
@@ -182,7 +195,7 @@
              }
          }
 
-         function getOverviewClass(state) {             
+         function getOverviewClass(state) {
              if (state === 'Critical Glitch') {
                  return 'class="danger"';
              }
@@ -197,23 +210,23 @@
 
          $('#btnRoll').click(function() {
              $('#results').empty();
-             
+
              var count = parseInt($('#nbrOfDices').val()),
                  hand = new Hand(6, count),
                  table = '<table id="resultTable" class="table">';
-             
+
              hand.roll(undefined, $('#explodingSixes')[0].checked);
              table += "<thead><tr><td><span>Successes: " + hand.getSuccesses() + "</span></td><td "+getOverviewClass(hand.getState()) +"><span>Overall: " +
                       hand.getState() + "</span></td></tr>";
-             table += "<tr><th>#</th><th>Result</th></tr></thead>";             
+             table += "<tr><th>#</th><th>Result</th></tr></thead>";
              for(var i = 0; i < hand.dice.length; i++) {
-                 table += "<tr " + getDieSuccessClass(hand.getDie(i)) + ">";                 
+                 table += "<tr " + getDieSuccessClass(hand.getDie(i)) + ">";
                  table += "<td>" + i + "</td><td>" + hand.getDie(i) + "</td>";
                  table += "</tr>";
              }
-             
+
              table += "</table>";
-             
+
              $('#results').append(table);
          });
         </script>
